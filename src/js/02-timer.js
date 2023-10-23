@@ -25,8 +25,6 @@ const options = {
   },
 };
 
-startBtn.addEventListener('click', onClick);
-
 let timerId = null;
 
 const onClick = () => {
@@ -56,6 +54,8 @@ const onClick = () => {
     secondsElement.textContent = addLeadingZero(periodOfTime.seconds);
   }, 1000);
 };
+
+startBtn.addEventListener('click', onClick);
 
 flatpickr(dateTimePicker, options);
 
