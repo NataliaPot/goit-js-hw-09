@@ -15,8 +15,8 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    if (selectedDates[0] > new Date()) {
+  onClose([selectedDates]) {
+    if (selectedDates > Date.now()) {
       startBtn.disabled = false;
     } else {
       Notiflix.Notify.failure('Please choose a date in the future');
@@ -26,34 +26,35 @@ const options = {
 };
 
 let timerId = null;
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0');
+}
 
 const onClick = () => {
-  if (startBtn.disabled) {
-    return;
-  }
-
   if (timerId) {
     clearInterval(timerId);
   }
   const selectedDate = new Date(dateTimePicker.value);
   timerId = setInterval(() => {
-    const currentTime = new Date();
+    const currentTime = Date.now();
     const countdown = selectedDate - currentTime;
 
     if (countdown <= 0) {
       clearInterval(timerId);
       return;
     }
-    function addLeadingZero(value) {
-      return value.toString().padStart(2, '0');
-    }
+
     const periodOfTime = convertMs(countdown);
-    daysElement.textContent = addLeadingZero(periodOfTime.days);
-    hoursElement.textContent = addLeadingZero(periodOfTime.hours);
-    minutesElement.textContent = addLeadingZero(periodOfTime.minutes);
-    secondsElement.textContent = addLeadingZero(periodOfTime.seconds);
+    updateTimerDisplay(periodOfTime);
   }, 1000);
 };
+
+function updateTimerDisplay({ days, hours, minutes, seconds }) {
+  daysElement.textContent = addLeadingZero(days);
+  hoursElement.textContent = addLeadingZero(hours);
+  minutesElement.textContent = addLeadingZero(minutes);
+  secondsElement.textContent = addLeadingZero(seconds);
+}
 
 startBtn.addEventListener('click', onClick);
 
